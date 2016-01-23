@@ -71,7 +71,6 @@ public class CarScript : MonoBehaviour {
         }
 
         if(!isGrounded)
-            //rigid.AddForce(-transform.right * 50);
             rigid.AddForce(Vector3.down * 50);
 
 	}
