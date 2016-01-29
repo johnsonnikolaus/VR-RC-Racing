@@ -4,27 +4,28 @@ using System.Collections;
 public class CarScript : MonoBehaviour {
 
     private Rigidbody rigid;
-
-    public float forwardForce;
-    public float turnForce;
+    private GameManager gameManager;
 
     public Ray groundDetection;
-    public Ray rightSideDetection;
-    public Ray leftSideDetection;
-    public Ray topSideDetection;
 
+    [Header("Driving Variables")]
+    public float forwardForce;
+    public float turnForce;
+    [Space()]
+    [Header("Active Variables")]
+    public Vector3 checkpointPos;
+    public Quaternion checkpointRot;
+    public bool canControl;
     public bool isGrounded;
-
+    [Space()]
+    [Header("Controller Variables")]
     public bool isKeyboard;
 
 	// Use this for initialization
 	void Start () {
 
         rigid = transform.GetComponent<Rigidbody>();
-
-        rightSideDetection = new Ray(transform.position, -transform.forward);
-        leftSideDetection = new Ray(transform.position, transform.forward);
-        topSideDetection = new Ray(transform.position, transform.right);
+        gameManager = GameObject.Find("Main Camera").GetComponent<GameManager>();
 	
 	}
 	
@@ -34,11 +35,20 @@ public class CarScript : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.R))
             Application.LoadLevel(Application.loadedLevel);
 
-        //isTipped();
+        if (isGrounded)
+            canControl = true;
+        else
+        {
+            rigid.AddForce(Vector3.down * 50);
+            StartCoroutine(TimedAirControl());
+        }
+
+        if (!canControl)
+            StartCoroutine(TimedRespawn());
 
         groundDetection = new Ray(transform.position, -transform.right);
 
-        if (Physics.Raycast(groundDetection, 1))
+        if (Physics.Raycast(groundDetection, 2f))
             isGrounded = true;
         else
             isGrounded = false;
@@ -47,79 +57,67 @@ public class CarScript : MonoBehaviour {
         Debug.DrawRay(transform.position, transform.forward, Color.red);
         Debug.DrawRay(transform.position, transform.right, Color.blue);
 
-
-        if (Input.GetAxisRaw("Trigger") != 0 || Input.GetAxisRaw("VerticalKey") != 0)
+        if (canControl)
         {
-            rigid.AddForce(transform.up * Input.GetAxisRaw("Trigger") * forwardForce * 10);
-            if(isKeyboard)
-                rigid.AddForce(transform.up * Input.GetAxisRaw("VerticalKey") * -forwardForce * 10);
-
-            if (Input.GetAxisRaw("Horizontal") != 0 && isGrounded)
+            if (Input.GetAxisRaw("Trigger") != 0 || Input.GetAxisRaw("VerticalKey") != 0)
             {
-                if (Mathf.RoundToInt(Input.GetAxisRaw("Trigger")) > 0 || Input.GetAxisRaw("Vertical") < 0)
-                rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal") * turnForce * 10, (transform.position + -transform.up * 3));
-                else
-                    rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal") * -turnForce * 10, (transform.position + -transform.up * 3));
-            }
+                rigid.AddForce(transform.up * Input.GetAxisRaw("Trigger") * forwardForce * 10);
+                if (isKeyboard)
+                    rigid.AddForce(transform.up * Input.GetAxisRaw("VerticalKey") * -forwardForce * 10);
 
+                if (Input.GetAxisRaw("Horizontal") != 0 && isGrounded)
+                {
+                    if (Mathf.RoundToInt(Input.GetAxisRaw("Trigger")) > 0 || Input.GetAxisRaw("VerticalKey") < 0)
+                        rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal") * turnForce * 10, (transform.position + -transform.up * 3));
+                    if (Mathf.RoundToInt(Input.GetAxisRaw("Trigger")) < 0 || Input.GetAxisRaw("VerticalKey") > 0)
+                        rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal") * turnForce * -10, (transform.position + -transform.up * 3));
+                }
+            }
         }
 
         if (Input.GetButtonDown("Jump"))
-        {
-            transform.position = transform.position + new Vector3(0, 3, 0);
-            transform.rotation = Quaternion.Euler(0, 180, 90);
-        }
-
-        if(!isGrounded)
-            rigid.AddForce(Vector3.down * 50);
+            Respawn();
 
 	}
 
-    /*
-
-    bool isTipped()
+    void OnTriggerEnter(Collider coll)
     {
-        //Left Side Detection
-        if (Physics.Raycast(leftSideDetection, 1))
-        {
-            StartCoroutine(TipTimer(2));
-            Debug.Log("LeftSide");
-            return true;
-        }
-        else
-            return false;
-
-        //Right Side Detection
-        if (Physics.Raycast(rightSideDetection, 1))
-        {
-            StartCoroutine(TipTimer(2));
-            Debug.Log("RightSide");
-            return true;
-        }
-        else
-            return false;
-
-        //Top Side Detection
-        if (Physics.Raycast(topSideDetection, 1))
-        {
-            StartCoroutine(TipTimer(2));
-            Debug.Log("TopSide");
-            return true;
-        }
-        else
-            return false;
+        if (coll.transform.tag == "RaceGate")
+            coll.GetComponent<RaceGate>().UpdateLap();
+        if (coll.transform.tag == "Checkpoint")
+            Debug.Log("Checkpoint");
     }
 
-    IEnumerator TipTimer(int time)
+    void Respawn()
     {
-        yield return new WaitForSeconds(time);
-        if (isTipped())
+        transform.position = checkpointPos + new Vector3(0, .25f, 0);
+        transform.rotation = checkpointRot;
+    }
+
+    IEnumerator TimedAirControl()
+    {
+        //Use a loop to check every second if the player has started touching the ground
+        for (int i = 0; i < 2; i++)
         {
-            transform.position = transform.position + new Vector3(0, 3, 0);
-            transform.rotation = new Quaternion(0, 0, 0, 0);
+            yield return new WaitForSeconds(1);
+            if (isGrounded)
+                break;
+            else
+                continue;
+        }
+
+        if (!isGrounded)
+                canControl = false;
+    }
+
+    IEnumerator TimedRespawn()
+    {
+        yield return new WaitForSeconds(3);
+        if (!canControl)
+        {
+            Respawn();
+            yield return new WaitForSeconds(2);
         }
     }
-    
-     */
 
 }
