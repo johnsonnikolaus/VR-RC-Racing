@@ -12,6 +12,12 @@ public class CarScript : MonoBehaviour {
     public float forwardForce;
     public float turnForce;
     [Space()]
+    [Header("Paint Variables")]
+    public bool paintMode;
+    public Color paintColor;
+    public GameObject paintMark;
+    public Ray wheelRay;
+    [Space()]
     [Header("Active Variables")]
     public Vector3 checkpointPos;
     public Quaternion checkpointRot;
@@ -31,6 +37,10 @@ public class CarScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        Physics.IgnoreLayerCollision(2, 8, true);
+
+        Debug.DrawRay((transform.position - (-transform.up * 1.25f)), Vector3.up, Color.cyan);
 
         if (Input.GetKeyDown(KeyCode.R))
             Application.LoadLevel(Application.loadedLevel);
@@ -61,6 +71,16 @@ public class CarScript : MonoBehaviour {
         {
             if (Input.GetAxisRaw("Trigger") != 0 || Input.GetAxisRaw("VerticalKey") != 0)
             {
+
+                if (paintMode)
+                {
+                    wheelRay = new Ray((transform.position - (-transform.up * 1.25f)), Vector3.down);
+                    if (Physics.Raycast(wheelRay, 0.7f))
+                    {
+                        StartCoroutine(PaintTrack());
+                    }
+                }
+
                 rigid.AddForce(transform.up * Input.GetAxisRaw("Trigger") * forwardForce * 10);
                 if (isKeyboard)
                     rigid.AddForce(transform.up * Input.GetAxisRaw("VerticalKey") * -forwardForce * 10);
@@ -118,6 +138,22 @@ public class CarScript : MonoBehaviour {
             Respawn();
             yield return new WaitForSeconds(2);
         }
+    }
+
+    IEnumerator PaintTrack()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(wheelRay, out hit, 0.7f))
+        {
+            if (hit.transform.GetComponent<MeshRenderer>().material.color != paintColor)
+            {
+                if (hit.transform.gameObject.layer == 8)
+                    Destroy(hit.transform.gameObject);
+                GameObject newPaintMark = Instantiate(paintMark, hit.point, Quaternion.Euler(0, transform.rotation.y, 0)) as GameObject;
+                newPaintMark.GetComponent<MeshRenderer>().material.color = paintColor;
+            }
+        }
+        yield return new WaitForSeconds(.5f);
     }
 
 }
