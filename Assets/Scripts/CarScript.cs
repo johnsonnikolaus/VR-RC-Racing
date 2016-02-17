@@ -7,10 +7,18 @@ public class CarScript : MonoBehaviour {
     private GameManager gameManager;
 
     public Ray groundDetection;
+    [HideInInspector]
+    public float startingWRot;
+    [HideInInspector]
+    public float lastYRot;
+
+    private int respawnCount;
 
     [Header("Driving Variables")]
-    public float forwardForce;
+    public float topSpeed;
+    public float acceleration;
     public float turnForce;
+    public float currentSpeed;
     [Space()]
     [Header("Paint Variables")]
     public bool paintMode;
@@ -19,6 +27,7 @@ public class CarScript : MonoBehaviour {
     public Ray wheelRay;
     [Space()]
     [Header("Active Variables")]
+    public int lap;
     public Vector3 checkpointPos;
     public Quaternion checkpointRot;
     public bool canControl;
@@ -26,12 +35,16 @@ public class CarScript : MonoBehaviour {
     [Space()]
     [Header("Controller Variables")]
     public bool isKeyboard;
+    public int player;
 
 	// Use this for initialization
 	void Start () {
 
+        startingWRot = transform.rotation.w;
         rigid = transform.GetComponent<Rigidbody>();
         gameManager = GameObject.Find("Main Camera").GetComponent<GameManager>();
+        checkpointPos = transform.position;
+        checkpointRot = transform.rotation;
 	
 	}
 	
@@ -41,9 +54,6 @@ public class CarScript : MonoBehaviour {
         Physics.IgnoreLayerCollision(2, 8, true);
 
         Debug.DrawRay((transform.position - (-transform.up * 1.25f)), Vector3.up, Color.cyan);
-
-        if (Input.GetKeyDown(KeyCode.R))
-            Application.LoadLevel(Application.loadedLevel);
 
         if (isGrounded)
             canControl = true;
@@ -69,57 +79,145 @@ public class CarScript : MonoBehaviour {
 
         if (canControl)
         {
-            if (Input.GetAxisRaw("Trigger") != 0 || Input.GetAxisRaw("VerticalKey") != 0)
+            if (paintMode && currentSpeed != 0)
             {
-
-                if (paintMode)
+                wheelRay = new Ray((transform.position - (-transform.up * 1.25f)), Vector3.down);
+                if (Physics.Raycast(wheelRay, 0.7f))
                 {
-                    wheelRay = new Ray((transform.position - (-transform.up * 1.25f)), Vector3.down);
-                    if (Physics.Raycast(wheelRay, 0.7f))
+                    StartCoroutine(PaintTrack());
+                }
+            }
+
+            if (isKeyboard)
+            {
+                if (player == 1)
+                {
+                    StartCoroutine(Accelerate());
+                    rigid.AddForce(transform.up * Input.GetAxisRaw("VerticalKey1") * -currentSpeed * 10);
+                    if (Input.GetAxisRaw("Horizontal1") != 0 && isGrounded)
                     {
-                        StartCoroutine(PaintTrack());
+                        //Set the respawn count to 0, so the player doesn't randomly respawn the wrong way
+                        respawnCount = 0;
+                        if (Input.GetAxisRaw("VerticalKey1") < 0)
+                            rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal1") * turnForce * 10, (transform.position + -transform.up * 3));
+                        if (Input.GetAxisRaw("VerticalKey1") > 0)
+                            rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal1") * turnForce * -10, (transform.position + -transform.up * 3));
+                    }
+                    if (Input.GetAxisRaw("VerticalKey1") == 0)
+                    {
+                        StartCoroutine(Decelarate());
                     }
                 }
 
-                rigid.AddForce(transform.up * Input.GetAxisRaw("Trigger") * forwardForce * 10);
-                if (isKeyboard)
-                    rigid.AddForce(transform.up * Input.GetAxisRaw("VerticalKey") * -forwardForce * 10);
-
-                if (Input.GetAxisRaw("Horizontal") != 0 && isGrounded)
+                if (player == 2)
                 {
-                    if (Mathf.RoundToInt(Input.GetAxisRaw("Trigger")) > 0 || Input.GetAxisRaw("VerticalKey") < 0)
-                        rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal") * turnForce * 10, (transform.position + -transform.up * 3));
-                    if (Mathf.RoundToInt(Input.GetAxisRaw("Trigger")) < 0 || Input.GetAxisRaw("VerticalKey") > 0)
-                        rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal") * turnForce * -10, (transform.position + -transform.up * 3));
+                    StartCoroutine(Accelerate());
+                    rigid.AddForce(transform.up * Input.GetAxisRaw("VerticalKey2") * -currentSpeed * 10);
+                    if (Input.GetAxisRaw("Horizontal2") != 0 && isGrounded)
+                    {
+                        //Set the respawn count to 0, so the player doesn't randomly respawn the wrong way
+                        respawnCount = 0;
+                        if (Input.GetAxisRaw("VerticalKey2") < 0)
+                            rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal2") * turnForce * 10, (transform.position + -transform.up * 3));
+                        if (Input.GetAxisRaw("VerticalKey2") > 0)
+                            rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("Horizontal2") * turnForce * -10, (transform.position + -transform.up * 3));
+                    }
+                    if (Input.GetAxisRaw("VerticalKey2") == 0)
+                    {
+                        StartCoroutine(Decelarate());
+                    }
+                }
+            }
+            if(!isKeyboard)
+            {
+                Debug.Log(Mathf.RoundToInt(Input.GetAxisRaw("Trigger")));
+                StartCoroutine(Accelerate());
+                rigid.AddForce(transform.up * Input.GetAxisRaw("Trigger") * currentSpeed * 10);
+                if (Mathf.RoundToInt(Input.GetAxisRaw("Trigger")) != 0)
+                {
+                    //Set the respawn count to 0, so the player doesn't randomly respawn the wrong way
+                    respawnCount = 0;
+                    if (Input.GetAxisRaw("JHorizontal") != 0 && isGrounded)
+                    {
+                        if (Input.GetAxisRaw("Trigger") > 0)
+                            rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("JHorizontal") * turnForce * 10, (transform.position + -transform.up * 3));
+                        if (Input.GetAxisRaw("Trigger") < 0)
+                            rigid.AddForceAtPosition(transform.forward * Input.GetAxisRaw("JHorizontal") * turnForce * -10, (transform.position + -transform.up * 3));
+                    }
+                    if (Input.GetAxisRaw("Trigger") == 0)
+                    {
+                        StartCoroutine(Decelarate());
+                    }
+
+                }
+            }
+            
+        }
+
+        if (player == 1) 
+        {
+            if (Input.GetButtonDown("Respawn1"))
+                Respawn();
+            if (!isKeyboard)
+            {
+                if (Input.GetButtonDown("Jump"))
+                {
+                    Respawn();
                 }
             }
         }
 
-        if (Input.GetButtonDown("Jump"))
-            Respawn();
+        if (player == 2)
+        {
+            if (Input.GetButtonDown("Respawn2"))
+                Respawn();
+            if (!isKeyboard)
+            {
+                if (Input.GetButtonDown("Jump"))
+                {
+                    Respawn();
+                }
+            }
+        }
 
 	}
 
     void OnTriggerEnter(Collider coll)
     {
+        //If the checkpoint is a race gate
         if (coll.transform.tag == "RaceGate")
-            coll.GetComponent<RaceGate>().UpdateLap();
+        {
+            lap += 1;
+            if (lap >= gameManager.lapsToFinish)
+            {
+                gameManager.winningPlayer = player;
+            }
+        }
+        //If the checkpoint is a regular checkpoint
         if (coll.transform.tag == "Checkpoint")
             Debug.Log("Checkpoint");
     }
 
     void Respawn()
     {
-        transform.position = checkpointPos + new Vector3(0, .25f, 0);
+        if(player == 1)
+            transform.position = checkpointPos + new Vector3(0, .25f, 0) + transform.forward * 2;
+
+        if(player == 2)
+            transform.position = checkpointPos + new Vector3(0, .25f, 0) + -transform.forward * 2;
+
         transform.rotation = checkpointRot;
+        respawnCount += 1;
+        if(respawnCount > 10)
+            transform.rotation = Quaternion.Euler(0, lastYRot, 90);
     }
 
     IEnumerator TimedAirControl()
     {
         //Use a loop to check every second if the player has started touching the ground
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 8; i++)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(.25f);
             if (isGrounded)
                 break;
             else
@@ -132,7 +230,7 @@ public class CarScript : MonoBehaviour {
 
     IEnumerator TimedRespawn()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         if (!canControl)
         {
             Respawn();
@@ -154,6 +252,28 @@ public class CarScript : MonoBehaviour {
             }
         }
         yield return new WaitForSeconds(.5f);
+    }
+
+    IEnumerator Decelarate()
+    {
+        if(currentSpeed > 0)
+            currentSpeed -= 2;
+
+        if (currentSpeed < 0)
+            currentSpeed = 0;
+
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    IEnumerator Accelerate()
+    {
+        if(currentSpeed < topSpeed)
+            currentSpeed += acceleration;
+
+        if (currentSpeed > topSpeed)
+            currentSpeed = topSpeed;
+
+        yield return new WaitForSeconds(0.5f);
     }
 
 }
