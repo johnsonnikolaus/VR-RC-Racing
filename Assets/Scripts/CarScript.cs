@@ -73,9 +73,39 @@ public class CarScript : MonoBehaviour {
         else
             isGrounded = false;
 
+        if (player == 1)
+        {
+            if (Input.GetButtonDown("Respawn1"))
+                Respawn();
+            if (!isKeyboard)
+            {
+                if (Input.GetButtonDown("Jump"))
+                {
+                    Respawn();
+                }
+            }
+        }
+
+        if (player == 2)
+        {
+            if (Input.GetButtonDown("Respawn2"))
+                Respawn();
+            if (!isKeyboard)
+            {
+                if (Input.GetButtonDown("Jump"))
+                {
+                    Respawn();
+                }
+            }
+        }
+
         Debug.DrawRay(transform.position, -transform.forward, Color.green);
         Debug.DrawRay(transform.position, transform.forward, Color.red);
         Debug.DrawRay(transform.position, transform.right, Color.blue);
+
+    }
+
+    void FixedUpdate () {
 
         if (canControl)
         {
@@ -152,32 +182,6 @@ public class CarScript : MonoBehaviour {
                 }
             }
             
-        }
-
-        if (player == 1) 
-        {
-            if (Input.GetButtonDown("Respawn1"))
-                Respawn();
-            if (!isKeyboard)
-            {
-                if (Input.GetButtonDown("Jump"))
-                {
-                    Respawn();
-                }
-            }
-        }
-
-        if (player == 2)
-        {
-            if (Input.GetButtonDown("Respawn2"))
-                Respawn();
-            if (!isKeyboard)
-            {
-                if (Input.GetButtonDown("Jump"))
-                {
-                    Respawn();
-                }
-            }
         }
 
 	}
