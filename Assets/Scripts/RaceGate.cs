@@ -27,4 +27,5 @@ public class RaceGate : MonoBehaviour {
         carScript.checkpointPos = transform.position - new Vector3(0,2,0);
         carScript.checkpointRot = coll.transform.rotation;
     }
+
 }

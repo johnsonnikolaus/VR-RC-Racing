@@ -32,6 +32,7 @@ public class CarScript : MonoBehaviour {
     public Quaternion checkpointRot;
     public bool canControl;
     public bool isGrounded;
+    public bool canActivateFinish;
     [Space()]
     [Header("Controller Variables")]
     public bool isKeyboard;
@@ -41,10 +42,13 @@ public class CarScript : MonoBehaviour {
 	void Start () {
 
         startingWRot = transform.rotation.w;
+        canActivateFinish = true;
         rigid = transform.GetComponent<Rigidbody>();
         gameManager = GameObject.Find("Main Camera").GetComponent<GameManager>();
         checkpointPos = transform.position;
         checkpointRot = transform.rotation;
+        SetColorForPlayer();
+        SetPaintColor();
 	
 	}
 	
@@ -54,14 +58,6 @@ public class CarScript : MonoBehaviour {
         Physics.IgnoreLayerCollision(2, 8, true);
 
         Debug.DrawRay((transform.position - (-transform.up * 1.25f)), Vector3.up, Color.cyan);
-
-        if (isGrounded)
-            canControl = true;
-        else
-        {
-            rigid.AddForce(Vector3.down * 50);
-            StartCoroutine(TimedAirControl());
-        }
 
         if (!canControl)
             StartCoroutine(TimedRespawn());
@@ -99,6 +95,7 @@ public class CarScript : MonoBehaviour {
             }
         }
 
+        //Shows the directions of the car
         Debug.DrawRay(transform.position, -transform.forward, Color.green);
         Debug.DrawRay(transform.position, transform.forward, Color.red);
         Debug.DrawRay(transform.position, transform.right, Color.blue);
@@ -106,6 +103,14 @@ public class CarScript : MonoBehaviour {
     }
 
     void FixedUpdate () {
+
+        if (isGrounded)
+            canControl = true;
+        else
+        {
+            rigid.AddForce(Vector3.down * 75);
+            StartCoroutine(TimedAirControl());
+        }
 
         if (canControl)
         {
@@ -189,17 +194,69 @@ public class CarScript : MonoBehaviour {
     void OnTriggerEnter(Collider coll)
     {
         //If the checkpoint is a race gate
-        if (coll.transform.tag == "RaceGate")
+        if (coll.transform.tag == "RaceGate" && canActivateFinish)
         {
             lap += 1;
+            StartCoroutine(ActivationTimer());
             if (lap >= gameManager.lapsToFinish)
             {
                 gameManager.winningPlayer = player;
             }
         }
-        //If the checkpoint is a regular checkpoint
-        if (coll.transform.tag == "Checkpoint")
-            Debug.Log("Checkpoint");
+    }
+
+    void SetColorForPlayer()
+    {
+        if (player == 1)
+        {
+            if (GameManager.p1Color == "red")
+                transform.GetComponent<MeshRenderer>().material =  gameManager.redMat;
+            if (GameManager.p1Color == "blue")
+                transform.GetComponent<MeshRenderer>().material = gameManager.blueMat;
+            if (GameManager.p1Color == "yellow")
+                transform.GetComponent<MeshRenderer>().material = gameManager.yellowMat;
+            if (GameManager.p1Color == "green")
+                transform.GetComponent<MeshRenderer>().material = gameManager.greenMat;
+        }
+
+        if (player == 2)
+        {
+            if (GameManager.p2Color == "red")
+                transform.GetComponent<MeshRenderer>().material = gameManager.redMat;
+            if (GameManager.p2Color == "blue")
+                transform.GetComponent<MeshRenderer>().material = gameManager.blueMat;
+            if (GameManager.p2Color == "yellow")
+                transform.GetComponent<MeshRenderer>().material = gameManager.yellowMat;
+            if (GameManager.p2Color == "green")
+                transform.GetComponent<MeshRenderer>().material = gameManager.greenMat;
+        }
+    }
+
+    void SetPaintColor()
+    {
+        if (player == 1)
+        {
+            if (GameManager.p1Color == "red")
+                paintColor = Color.red;
+            if (GameManager.p1Color == "blue")
+                paintColor = Color.blue;
+            if (GameManager.p1Color == "yellow")
+                paintColor = Color.yellow;
+            if (GameManager.p1Color == "green")
+                paintColor = Color.green;
+        }
+
+        if (player == 2)
+        {
+            if (GameManager.p2Color == "red")
+                paintColor = Color.red;
+            if (GameManager.p2Color == "blue")
+                paintColor = Color.blue;
+            if (GameManager.p2Color == "yellow")
+                paintColor = Color.yellow;
+            if (GameManager.p2Color == "green")
+                paintColor = Color.green;
+        }
     }
 
     void Respawn()
@@ -240,6 +297,13 @@ public class CarScript : MonoBehaviour {
             Respawn();
             yield return new WaitForSeconds(2);
         }
+    }
+
+    IEnumerator ActivationTimer()
+    {
+        canActivateFinish = false;
+        yield return new WaitForSeconds(15);
+        canActivateFinish = true;
     }
 
     IEnumerator PaintTrack()

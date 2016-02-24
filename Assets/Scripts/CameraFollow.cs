@@ -12,6 +12,9 @@ public class CameraFollow : MonoBehaviour {
 
     private Vector3 vel;
 
+    public Ray transparencyRay;
+    public RaycastHit hit;
+
 	// Use this for initialization
 	void Start () {
 
@@ -24,6 +27,15 @@ public class CameraFollow : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        Debug.DrawRay(transform.position, transform.forward);
+        transparencyRay = new Ray(transform.position, transform.forward);
+
+        if (Physics.Raycast(transparencyRay, out hit, 10))
+        {
+            hit.transform.GetComponent<MeshRenderer>().enabled = false;
+            hit.transform.gameObject.AddComponent<PieceTransparencyReset>();
+        }
+
 
         distance = Mathf.RoundToInt(camPosScript.distanceBetween);
 
