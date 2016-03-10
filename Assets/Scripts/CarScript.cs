@@ -5,6 +5,7 @@ public class CarScript : MonoBehaviour {
 
     private Rigidbody rigid;
     private GameManager gameManager;
+    private AudioSource carAudio;
 
     public Ray groundDetection;
     [HideInInspector]
@@ -14,11 +15,17 @@ public class CarScript : MonoBehaviour {
 
     private int respawnCount;
 
+    public bool trackEditor;
+
     [Header("Driving Variables")]
     public float topSpeed;
     public float acceleration;
     public float turnForce;
     public float currentSpeed;
+    [Space()]
+    [Header("Audio Variables")]
+    public float startingPitch = 1;
+    public float pitchAdjust;
     [Space()]
     [Header("Paint Variables")]
     public bool paintMode;
@@ -41,7 +48,12 @@ public class CarScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+        if (Application.loadedLevelName == "Track Editor")
+            trackEditor = true;
+        else
+            trackEditor = false;
         startingWRot = transform.rotation.w;
+        carAudio = transform.GetComponentInChildren<AudioSource>();
         canActivateFinish = true;
         rigid = transform.GetComponent<Rigidbody>();
         gameManager = GameObject.Find("Main Camera").GetComponent<GameManager>();
@@ -55,7 +67,15 @@ public class CarScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        //if (trackEditor)
+        //{
+        //    carAudio.volume = 0;
+        //    canControl = false;
+        //    return;
+        //}
+
         Physics.IgnoreLayerCollision(2, 8, true);
+        Physics.IgnoreLayerCollision(2, 9, false);
 
         Debug.DrawRay((transform.position - (-transform.up * 1.25f)), Vector3.up, Color.cyan);
 
@@ -65,9 +85,15 @@ public class CarScript : MonoBehaviour {
         groundDetection = new Ray(transform.position, -transform.right);
 
         if (Physics.Raycast(groundDetection, 2f))
+        {
             isGrounded = true;
+            pitchAdjust = 30;
+        }
         else
+        {
             isGrounded = false;
+            pitchAdjust = 25;
+        }
 
         if (player == 1)
         {
@@ -94,6 +120,8 @@ public class CarScript : MonoBehaviour {
                 }
             }
         }
+
+        carAudio.pitch = startingPitch + (currentSpeed / pitchAdjust);
 
         //Shows the directions of the car
         Debug.DrawRay(transform.position, -transform.forward, Color.green);
@@ -325,7 +353,7 @@ public class CarScript : MonoBehaviour {
     IEnumerator Decelarate()
     {
         if(currentSpeed > 0)
-            currentSpeed -= 2;
+            currentSpeed -= 4;
 
         if (currentSpeed < 0)
             currentSpeed = 0;

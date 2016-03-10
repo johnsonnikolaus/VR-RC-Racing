@@ -1,0 +1,20 @@
+VR RC Racing
+Created by Nikolaus Johnson
+
+For any questions, comments, or questions email: johnsonnikolaus@gmail.com
+
+Controls
+
+Universal:
+Escape - Pause
+R - Restart level
+
+Player 1:
+WASD - Movement
+Left Shift - Respawn
+
+Player 2:
+Arrow Keys - Movement
+0 Numpad - Respawn
+
+© 2016 Nikolaus Johnson 

@@ -15,6 +15,8 @@ public class CameraFollow : MonoBehaviour {
     public Ray transparencyRay;
     public RaycastHit hit;
 
+    public bool trackEditor;
+
 	// Use this for initialization
 	void Start () {
 
@@ -39,7 +41,10 @@ public class CameraFollow : MonoBehaviour {
 
         distance = Mathf.RoundToInt(camPosScript.distanceBetween);
 
-        offset = new Vector3(0, 15 * (camPosScript.distanceBetween / 40) + 10, -15 * (camPosScript.distanceBetween / 40) + -10);
+        if(!trackEditor)
+            offset = new Vector3(0, 15 * (camPosScript.distanceBetween / 40) + 10, -15 * (camPosScript.distanceBetween / 40) + -10);
+        else
+            offset = new Vector3(0, 15 * (camPosScript.distanceBetween / 40) + 20, -15 * (camPosScript.distanceBetween / 40) + -20);
 
         transform.position = Vector3.SmoothDamp(transform.position, target.transform.position + offset, ref vel, 1.5f);
         transform.LookAt(target.transform.position);
