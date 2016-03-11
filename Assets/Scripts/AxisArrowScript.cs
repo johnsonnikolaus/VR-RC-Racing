@@ -43,20 +43,20 @@ public class AxisArrowScript : MonoBehaviour
 
             if (selectedAxis == xArrow && selectedTrackPiece != null)
             {
-                transform.Translate(transform.right * 4, Space.World);
-                selectedTrackPiece.transform.Translate(transform.right * 4, Space.World);
+                transform.Translate(transform.right * 2, Space.World);
+                selectedTrackPiece.transform.Translate(transform.right * 2, Space.World);
             }
 
             if (selectedAxis == yArrow && selectedTrackPiece != null)
             {
-                transform.Translate(transform.up * 2, Space.World);
-                selectedTrackPiece.transform.Translate(transform.up * 2, Space.World);
+                transform.Translate(transform.up * 1, Space.World);
+                selectedTrackPiece.transform.Translate(transform.up * 1, Space.World);
             }
 
             if (selectedAxis == zArrow && selectedTrackPiece != null)
             {
-                transform.Translate(transform.forward * 4, Space.World);
-                selectedTrackPiece.transform.Translate(transform.forward * 4, Space.World);
+                transform.Translate(transform.forward * 2, Space.World);
+                selectedTrackPiece.transform.Translate(transform.forward * 2, Space.World);
             }
 
             if (selectedAxis == rotArrow && selectedTrackPiece != null)
@@ -90,20 +90,20 @@ public class AxisArrowScript : MonoBehaviour
 
             if (selectedAxis == xArrow && selectedTrackPiece != null)
             {
-                transform.Translate(transform.right * -4, Space.World);
-                selectedTrackPiece.transform.Translate(transform.right * -4, Space.World);
+                transform.Translate(transform.right * -2, Space.World);
+                selectedTrackPiece.transform.Translate(transform.right * -2, Space.World);
             }
 
             if (selectedAxis == yArrow && selectedTrackPiece != null)
             {
-                transform.Translate(transform.up * -2, Space.World);
-                selectedTrackPiece.transform.Translate(transform.up * -2, Space.World);
+                transform.Translate(transform.up * -1, Space.World);
+                selectedTrackPiece.transform.Translate(transform.up * -1, Space.World);
             }
 
             if (selectedAxis == zArrow && selectedTrackPiece != null)
             {
-                transform.Translate(transform.forward * -4, Space.World);
-                selectedTrackPiece.transform.Translate(transform.forward * -4, Space.World);
+                transform.Translate(transform.forward * -2, Space.World);
+                selectedTrackPiece.transform.Translate(transform.forward * -2, Space.World);
             }
 
             if (selectedAxis == rotArrow && selectedTrackPiece != null)
@@ -125,29 +125,29 @@ public class AxisArrowScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.W))
         {
-            transform.Translate(transform.forward * 4, Space.World);
-            selectedTrackPiece.transform.Translate(transform.forward * 4, Space.World);
+            transform.Translate(transform.forward * 2, Space.World);
+            selectedTrackPiece.transform.Translate(transform.forward * 2, Space.World);
             camPos.transform.position = selectedTrackPiece.transform.position;
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            transform.Translate(transform.forward * -4, Space.World);
-            selectedTrackPiece.transform.Translate(transform.forward * -4, Space.World);
+            transform.Translate(transform.forward * -2, Space.World);
+            selectedTrackPiece.transform.Translate(transform.forward * -2, Space.World);
             camPos.transform.position = selectedTrackPiece.transform.position;
         }
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            transform.Translate(transform.right * -4, Space.World);
-            selectedTrackPiece.transform.Translate(transform.right * -4, Space.World);
+            transform.Translate(transform.right * -2, Space.World);
+            selectedTrackPiece.transform.Translate(transform.right * -2, Space.World);
             camPos.transform.position = selectedTrackPiece.transform.position;
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            transform.Translate(transform.right * 4, Space.World);
-            selectedTrackPiece.transform.Translate(transform.right * 4, Space.World);
+            transform.Translate(transform.right *2, Space.World);
+            selectedTrackPiece.transform.Translate(transform.right * 2, Space.World);
             camPos.transform.position = selectedTrackPiece.transform.position;
         }
 
@@ -165,15 +165,15 @@ public class AxisArrowScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            transform.Translate(transform.up * 2, Space.World);
-            selectedTrackPiece.transform.Translate(transform.up * 2, Space.World);
+            transform.Translate(transform.up * 1, Space.World);
+            selectedTrackPiece.transform.Translate(transform.up * 1, Space.World);
             camPos.transform.position = selectedTrackPiece.transform.position;
         }
 
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            transform.Translate(transform.up * -2, Space.World);
-            selectedTrackPiece.transform.Translate(transform.up * -2, Space.World);
+            transform.Translate(transform.up * -1, Space.World);
+            selectedTrackPiece.transform.Translate(transform.up * -1, Space.World);
             camPos.transform.position = selectedTrackPiece.transform.position;
         }
         #endregion

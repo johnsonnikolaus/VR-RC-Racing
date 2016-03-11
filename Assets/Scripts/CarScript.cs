@@ -226,9 +226,10 @@ public class CarScript : MonoBehaviour {
         {
             lap += 1;
             StartCoroutine(ActivationTimer());
-            if (lap >= gameManager.lapsToFinish)
+            if (lap >= gameManager.lapsToFinish + 1)
             {
                 gameManager.winningPlayer = player;
+                canControl = false;
             }
         }
     }

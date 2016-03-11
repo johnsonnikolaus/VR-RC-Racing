@@ -2,7 +2,7 @@ VR RC Racing
 Created by Nikolaus Johnson
 
 For any questions, comments, or questions email: johnsonnikolaus@gmail.com
-
+============================================================================
 Controls
 
 Universal:
@@ -17,4 +17,23 @@ Player 2:
 Arrow Keys - Movement
 0 Numpad - Respawn
 
+Track Editor:
+WASD - Move selected track piece
+Q or E - rotate selected track piece
+Mouse Clicks (Left or Right) - Move/Rotate selected track piece
+============================================================================
+To access custom levels to share with friends, navigate to your AppData.
+WindowsKey + R and enter "%appdata%
+There will be a folder titled "VR RC Racing" and within that folder, another
+named "Levels."
+Simply share the .txt file with a friend and they can play your level also.
+To load a custom level, drag a .txt file from a friend's "Levels" folder
+and in game type the name of the level and click "Load."
+If there are no errors with the level's syntax, the level should load with
+little to no bugs.
+
+**As this is a new feature, there are still bugs that need to be fixed.
+While you are able to share tracks with friends, some track pieces may need
+to be fixed in the editor before being able to play the track as intended.**
+============================================================================
 © 2016 Nikolaus Johnson 

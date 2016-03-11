@@ -1,0 +1,15 @@
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\Assembly-CSharp.pdb
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\Mono.Cecil.dll
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\UnityEditor.dll
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\UnityEditor.iOS.Extensions.Xcode.dll
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\UnityEngine.dll
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\UnityEngine.Networking.dll
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\UnityEngine.UI.dll
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\UnityEngine.UI.xml
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\UnityEngine.Networking.xml
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\UnityEditor.xml
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_obj\Debug\VR RC Racing.CSharp.csprojResolveAssemblyReference.cache
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_obj\Debug\Assembly-CSharp.dll
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_obj\Debug\Assembly-CSharp.pdb
+C:\Users\Nikolaus\Documents\Game Development\Projects\VR RC Racing\Temp\UnityVS_bin\Debug\UnityEngine.xml

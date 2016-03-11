@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour {
     private Text winnerText;
     private Canvas gameOverCanvas;
     private Canvas pauseCanvas;
+    private Canvas hudCanvas;
 
     public Material redMat;
     public Material blueMat;
@@ -39,7 +40,10 @@ public class GameManager : MonoBehaviour {
             for (int i = 0; i < players.Length; i++)
             {
                 if (players[i].GetComponent<CarScript>().player > numOfPlayers)
-                    players[i].SetActive(false);
+                    if (players[i].transform.name != ("RC Car 1"))
+                    {
+                        Destroy(players[i].gameObject);
+                    }
                 else
                     continue;
             }
@@ -49,6 +53,7 @@ public class GameManager : MonoBehaviour {
         winnerText = GameObject.Find("Winner Text").GetComponent<Text>();
         gameOverCanvas = GameObject.Find("Game Over Canvas").GetComponent<Canvas>();
         pauseCanvas = GameObject.Find("Pause Canvas").GetComponent<Canvas>();
+        hudCanvas = GameObject.Find("HUD").GetComponent<Canvas>();
 
         pauseCanvas.enabled = false;
         gameOverCanvas.enabled = false;
@@ -78,13 +83,19 @@ public class GameManager : MonoBehaviour {
 
         if (winningPlayer != 0)
         {
-            Time.timeScale = 0;
+            //Time.timeScale = 0;
             gameOverCanvas.enabled = true;
+            hudCanvas.enabled = false;
             winnerText.text = "Player " + winningPlayer + " Won!";
+        }
+        else
+        {
+            gameOverCanvas.enabled = false;
+            hudCanvas.enabled = true;
         }
 
         if (numOfPlayers == 1)
-            lapText.text = "Player " + players[0].GetComponent<CarScript>().player + ": " + players[0].GetComponent<CarScript>().lap + "/" + lapsToFinish;
+            lapText.text = "Player " + GameObject.Find("RC Car 1").GetComponent<CarScript>().player + ": " + GameObject.Find("RC Car 1").GetComponent<CarScript>().lap + "/" + lapsToFinish;
 
         if(numOfPlayers == 2)
             lapText.text = "Player " + players[0].GetComponent<CarScript>().player + ": " + players[0].GetComponent<CarScript>().lap + "/" + lapsToFinish + "\n" +

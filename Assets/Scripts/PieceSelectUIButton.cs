@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
 using System.IO;
 using System.Collections;
 
@@ -81,10 +80,15 @@ public class PieceSelectUIButton : MonoBehaviour {
                     File.AppendText("Error creating level: Invalid track piece");
                     return;
             }
-            File.AppendAllText(gamePath, "*" + System.Environment.NewLine);
-            File.AppendAllText(gamePath, "ID<" + pieceID + ">" + System.Environment.NewLine);
-            File.AppendAllText(gamePath, "pos<" + trackPieces[i].transform.position + ">" + System.Environment.NewLine);
-            File.AppendAllText(gamePath, "rot<" + trackPieces[i].transform.GetChild(0).transform.rotation.eulerAngles + ">" + System.Environment.NewLine);
+            File.AppendAllText(gamePath, "*");
+            File.AppendAllText(gamePath, "ID<" + pieceID + ">");
+            File.AppendAllText(gamePath, "posX<" + trackPieces[i].transform.GetChild(0).transform.position.x + ">endPosX");
+            File.AppendAllText(gamePath, "posY<" + trackPieces[i].transform.GetChild(0).transform.position.y + ">endPosY");
+            File.AppendAllText(gamePath, "posZ<" + trackPieces[i].transform.GetChild(0).transform.position.z + ">endPosZ");
+            File.AppendAllText(gamePath, "rotX<" + trackPieces[i].transform.GetChild(0).transform.rotation.eulerAngles.x + ">endRotX");
+            File.AppendAllText(gamePath, "rotY<" + trackPieces[i].transform.GetChild(0).transform.rotation.eulerAngles.y + ">endRotY");
+            File.AppendAllText(gamePath, "rotZ<" + trackPieces[i].transform.GetChild(0).transform.rotation.eulerAngles.z + ">endRotZ");
+            File.AppendAllText(gamePath, System.Environment.NewLine);
         }
     }
 

@@ -35,20 +35,20 @@ public class CameraPositioner : MonoBehaviour {
             }
             catch
             {
-                Debug.Log("No piece selected, but cars not placed");
+                return;
             }
         }
 
         if (!trackEditor)
         {
-            if (players.Length > 1)
+            if (GameManager.numOfPlayers > 1)
             {
                 distanceBetween = Vector3.Distance(players[0].transform.position, players[1].transform.position);
                 middlePoint = ((players[0].transform.position / 2) + (players[1].transform.position / 2));
                 transform.position = middlePoint;
             }
             else
-                transform.position = players[0].transform.position;
+                transform.position = GameObject.Find("RC Car 1").transform.position;
         }
 	
 	}
